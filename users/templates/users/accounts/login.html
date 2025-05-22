@@ -1,0 +1,27 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+        <div class="card shadow-lg text-center p-4">
+            <h2 class="mb-4">Login</h2>
+            <form method="post">
+                {%csrf_token%}
+                {%for field in form%}
+                <div class="mb-3">
+                    <label class="form-label">{{field.label}}</label>
+                    {{field}}
+                    <div class="text-danger">
+                    {% if field.errors %}{{field.errors|striptags}}{%endif%}
+                    </div>
+                </div>
+                {%endfor%}
+                <button class="btn btn-primary" type="submit">Login</button>
+            </form>
+            <a class="py-2" href="{% url 'register'%}">Don't have an account?</a>
+        </div>
+        </div>
+    </div>
+    {%endblock%}
