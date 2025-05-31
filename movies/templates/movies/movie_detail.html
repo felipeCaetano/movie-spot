@@ -4,51 +4,64 @@
 <div class="container my-5">
     <h1>{{movie.title}}</h1>
     <h2 class="text-muted fw-light small">{{movie.release_date}}</h2>
+
     <div class="row">
         <div class="col-md-4">
-            <img alt="poster movie" alt="{{ movie.title }}" class="card-img-top"
-                src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}">
+            <img alt="{{ movie.title }}" class="card-img-top"
+                 src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}">
         </div>
         <div class="col">
             <p>{{movie.overview}}</p>
             <ul class="list-inline">
                 {% for genre in movie.genres %}
-                <li class="list-inline-item">{{genre.name}}</li>
-                {%empty%}
-                <p class="text-muted"> No genres provided.</p>
-                {%endfor%}
+                <li class="list-inline-item">{{genre.name}}
+                    {% if not forloop.last %}, {%endif%}</li>
+            {%empty%}
+            <p class="text-muted"> No genres provided.</p>
+            {%endfor%}
             </ul>
-            <ul class="list-inline">
-                {%if credits%}
+            {%if credits%}
                 <h3>Directors:</h3>
-                {%for member in credits.crew%}
-                {%if member.job == "Director"%}
-                <li>{{member.name}}</li>
-                {%endif%}
-                {%empty%}
-                <p class="text-muted"> No director info provided.</p>
-                {%endfor%}
+                <ul class="list-inline">
+                        {%for member in credits.crew%}
+                        {%if member.job == "Director"%}
+                        <li>{{member.name}}{% if not forloop.last %}, {%endif%}</li>
+                        {%endif%}
+                        {%empty%}
+                        <p class="text-muted"> No director info provided.</p>
+                        {%endfor%}
+                </ul>
                 <h3>Cast:</h3>
                 <ul class="=list-inline">
-                {% for member in credits.cast|slice:":10" %}
-                <li class="list-inline-item">{{member.name}}</li>
-                {%empty%}
-                <p class="text-muted"> No cast info provided.</p>
-                {%endfor%}
-                {% else %}
+                    {% for member in credits.cast|slice:":10" %}
+                    <li class="list-inline-item">{{member.name}}{% if not forloop.last %}, {%endif%}</li>
+                    {%empty%}
+                    <p class="text-muted"> No cast info provided.</p>
+                    {%endfor%}
+                </ul>
+            {% else %}
                 <p class="text-muted">No credits info provided.</p>
-                {% endif %}
-            </ul>
+            {% endif %}
+
             {% if user.is_authenticated %}
             <h5>Add to list:</h5>
             {% if user_lists %}
             <div class="dropdown">
-                <button class="btn btn-scondary">Add to List</button>
+                <button class="btn btn-primary dropdown-toggle" type="button"  data-bs-toggle="dropdown">Add to List</button>
                 <ul class="dropdown-menu">
-            {%for list in user_lists%}
-            <li> <a class="dropdown-item">{{list.name}}></a></li>
-            {%endfor%}
-            </ul>
+                    {% for list in user_lists %}
+                    <li>
+                        <form hx-post="{% url 'add_to_list' list_id=list.id movie_id=movie.id movie_name=movie.title %}"
+                              hx-trigger="click"
+                              hx-target="#toast-container"
+                              hx-swap="beforeend">
+                            {% csrf_token %}
+                        <button type="submit" class="dropdown-item">{{list.name}}</button></form></li>
+                    {% endfor %}
+                    <form method="get" action="{% url 'profile' %}">
+                        <button class="btn">&#x2795; List</button>
+                    </form>
+                </ul>
             </div>
             {% else %}
             <p>You don't have any list. <a href="{% url 'profile' %}">create a list</a></p>
@@ -57,4 +70,5 @@
         </div>
     </div>
 </div>
+<div class="position-fixed bottom-0 end-0 m-4" id="toast-container"></div>
 {%endblock%}

@@ -9,10 +9,30 @@
                  class="card-img-top"
                  src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}"
                  alt="{{ movie.title }}">
-            <div class="card-body">
+            <div class="card-body mt-2">
                 <h5 class="card-title">{{movie.title}}</h5>
                 <p class="card-text">{{movie.vote_average|floatformat:2}}/10</p>
-                <a class="btn btn-primary" href="#">Go somewhere</a>
+               {% if user.is_authenticated %}
+            {% if user_lists %}
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button"  data-bs-toggle="dropdown">Add to List</button>
+                <ul class="dropdown-menu">
+                    {% for list in user_lists %}
+                    <li>
+                        <form hx-post="{% url 'add_to_list' list_id=list.id movie_id=movie.id movie_name=movie.title %}"
+                              hx-trigger="click"
+                              hx-target="#toast-container"
+                              hx-swap="beforeend">
+                            {% csrf_token %}
+                        <button type="submit" class="dropdown-item">{{list.name}}</button></form></li>
+                    {% endfor %}
+                    <form method="get" action="{% url 'profile' %}">
+                        <button class="btn">&#x2795; List</button>
+                    </form>
+                </ul>
+            </div>
+            {%endif%}
+            {%endif%}
             </div>
         </div>
     </a>

@@ -15,7 +15,8 @@ API_KEY = settings.TMDB_API_KEY
 def landing_page(request):
     category = request.GET.get("category", "popular")
     search_query = request.GET.get("search", "")
-
+    user_lists = UserList.objects.filter(
+        user=request.user) if request.user.is_authenticated else None
     page = int(request.GET.get("page", 1))
     next_page = page + 1
     error_message = ""
@@ -36,21 +37,23 @@ def landing_page(request):
             "movies/partials/_movie_list.html",
             {"movies": data, "category": category,
              "search_query": search_query, "error_message": error_message,
-             "next_page": next_page}
+             "next_page": next_page,
+             'user_lists': user_lists}
         )
     return  render(
         request,
         "movies/landing.html",
         {"movies":data,"category": category,
          "search_query": search_query, "error_message":error_message,
-         "next_page": next_page}
+         "next_page": next_page,
+         'user_lists': user_lists}
     )
 
 def movie_detail(request, movie_id):
     movie_details_url = f"{BASE_URL}movie/{movie_id}?api_key={API_KEY}"
     movie_credits_url = f"https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key={API_KEY}"
     error_message = ""
-    user_lists = UserList.objects.filter(user=request.user) if request.user.is_authenticated() else None
+    user_lists = UserList.objects.filter(user=request.user) if request.user.is_authenticated else None
     try:
         movie_detail_response = requests.get(movie_details_url)
         movie_detail_response.raise_for_status()

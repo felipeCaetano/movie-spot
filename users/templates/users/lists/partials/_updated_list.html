@@ -1,0 +1,30 @@
+{% if movies %}
+{% for movie in movies %}
+        <div class="col-md">
+                <div class="card" style="width: 18rem;">
+                    {%if is_owner %}
+                    <button class="position-absolute end-0 top-0 m-2 btn-danger"
+                    data-bs-toggle="modal"
+                            data-bs-target="#delete-movie-modal-{{movie.id}}">❌
+                    </button>
+                    {% include "users/modals/_movie_delete_confirm.html" %}
+                    {%endif%}
+                    <a class="text-decoration-none" href="{% url 'movie_detail' movie.id %}">
+                    <img alt="poster movie" class="card-img-top" src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}" alt="{{ movie.title }}">
+                        </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{movie.title}}</h5>
+                        <p class="card-text">
+                            {{movie.vote_average|floatformat:2}}/10</p>
+                        <a class="btn btn-primary" href="#">Go somewhere</a>
+                    </div>
+                </div>
+
+        </div>
+        {% endfor %}
+{%else%}
+<div class="position-absolute top-50 start-50">
+<p> This List is Empty 😢</p>
+<a href="/" class="btn btn-primary">Find Movies</a>
+</div>
+{%endif%}

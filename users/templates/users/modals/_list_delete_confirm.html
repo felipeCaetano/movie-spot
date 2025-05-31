@@ -7,7 +7,7 @@
         </div>
         <div class="modal-body">
             <form
-            hx-post = {% url 'delete_list' list.id %}
+            hx-post = "{% url 'delete_list' list.id %}"
             hx-swap="innerHTML"
             hx-target="#user-lists-container"
             >
