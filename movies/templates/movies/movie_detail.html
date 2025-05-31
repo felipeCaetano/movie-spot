@@ -5,11 +5,9 @@
     <h1>{{movie.title}}</h1>
     <h2 class="text-muted fw-light small">{{movie.release_date}}</h2>
     <div class="row">
-        <div class="col">
-            <img alt="poster movie"
-                 alt="{{ movie.title }}"
-                 class="card-img-top"
-                 src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}">
+        <div class="col-md-4">
+            <img alt="poster movie" alt="{{ movie.title }}" class="card-img-top"
+                src="{%if movie.poster_path %}https://image.tmdb.org/t/p/original{{movie.poster_path}}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930{%endif%}">
         </div>
         <div class="col">
             <p>{{movie.overview}}</p>
@@ -31,6 +29,7 @@
                 <p class="text-muted"> No director info provided.</p>
                 {%endfor%}
                 <h3>Cast:</h3>
+                <ul class="=list-inline">
                 {% for member in credits.cast|slice:":10" %}
                 <li class="list-inline-item">{{member.name}}</li>
                 {%empty%}
@@ -40,6 +39,21 @@
                 <p class="text-muted">No credits info provided.</p>
                 {% endif %}
             </ul>
+            {% if user.is_authenticated %}
+            <h5>Add to list:</h5>
+            {% if user_lists %}
+            <div class="dropdown">
+                <button class="btn btn-scondary">Add to List</button>
+                <ul class="dropdown-menu">
+            {%for list in user_lists%}
+            <li> <a class="dropdown-item">{{list.name}}></a></li>
+            {%endfor%}
+            </ul>
+            </div>
+            {% else %}
+            <p>You don't have any list. <a href="{% url 'profile' %}">create a list</a></p>
+            {%endif%}
+            {%endif%}
         </div>
     </div>
 </div>
