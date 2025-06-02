@@ -137,7 +137,7 @@ def delete_movie(request, movie_id, list_id):
                 movies.append(movie)
         return render(
             request,
-            "users/lists/partial/_updated_list.html",
+            "users/lists/partials/_updated_list.html",
             {
                 'movies': movies,
                 "is_owner": request.user.is_authenticated and request.user ==

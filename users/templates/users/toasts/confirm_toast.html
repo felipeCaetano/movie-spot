@@ -2,7 +2,7 @@
     <div class="d-flex">
       <div class="toast-body">
         {{message}}<a class="text-light fw-bold"
-                      href="{%url 'list_detail list_id=user_lists.id%}">
+                      href={% url 'list_detail' list_id=user_lists.id %}>
           {{user_lists.name}}</a>.
       </div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
